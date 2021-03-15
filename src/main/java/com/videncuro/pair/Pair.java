@@ -3,6 +3,7 @@ package com.videncuro.pair;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 
 public final class Pair<Left, Right> implements Serializable,
         Map.Entry<Left, Right> {
@@ -61,5 +62,17 @@ public final class Pair<Left, Right> implements Serializable,
     @Override
     public String toString() {
         return String.format("Pair{left=%s, right=%s}", left, right);
+    }
+
+    public <NewLeft> Pair<NewLeft, Right> mapLeft(Function<Left, NewLeft> mapper) {
+        return Pair.of(mapper.apply(left), right);
+    }
+
+    public <NewLeft> Pair<NewLeft, Right> map(Function<Left, NewLeft> mapper) {
+        return mapLeft(mapper);
+    }
+    
+    public <NewRight> Pair<Left, NewRight> mapRight(Function<Right, NewRight> mapper) {
+        return Pair.of(left, mapper.apply(right));
     }
 }

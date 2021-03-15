@@ -74,6 +74,37 @@ class PairTest {
         );
     }
 
+    @Test
+    void mapAsmapLeft() {
+        Pair<String, String> pair = Pair.of("hello", "world")
+                .map(s -> s + " name");
+        Assertions.assertAll(
+                () -> assertThat(pair, left(is("hello name"))),
+                () -> assertThat(pair, right(is("world")))
+        );
+    }
+
+    @Test
+    void mapLeft() {
+        Pair<String, String> pair = Pair.of("hello", "world")
+                .mapLeft(s -> s + " name");
+        Assertions.assertAll(
+                () -> assertThat(pair, left(is("hello name"))),
+                () -> assertThat(pair, right(is("world")))
+        );
+    }
+
+    @Test
+    void mapRight() {
+        Pair<String, String> pair = Pair.of("hello", "world")
+                .mapRight(s -> "all the " + s);
+        Assertions.assertAll(
+                () -> assertThat(pair, left(is("hello"))),
+                () -> assertThat(pair, right(is("all the world")))
+        );
+
+    }
+
     private <Right> Matcher<? super Pair<?, Right>> right(Matcher<Right> matchRight) {
         return new FeatureMatcher<Pair<?, Right>, Right>(matchRight, "right", "right") {
             protected Right featureValueOf(Pair<?, Right> actual) {

@@ -105,6 +105,12 @@ class PairTest {
 
     }
 
+    @Test
+    void fold() {
+        Pair<String, String> pair = Pair.of("left", "right");
+        assertThat(pair.fold((l, r) -> l + " " +r), is("left right"));
+    }
+
     private <Right> Matcher<? super Pair<?, Right>> right(Matcher<Right> matchRight) {
         return new FeatureMatcher<Pair<?, Right>, Right>(matchRight, "right", "right") {
             protected Right featureValueOf(Pair<?, Right> actual) {

@@ -3,6 +3,7 @@ package com.videncuro.pair;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public final class Pair<Left, Right> implements Serializable,
@@ -71,8 +72,12 @@ public final class Pair<Left, Right> implements Serializable,
     public <NewLeft> Pair<NewLeft, Right> map(Function<Left, NewLeft> mapper) {
         return mapLeft(mapper);
     }
-    
+
     public <NewRight> Pair<Left, NewRight> mapRight(Function<Right, NewRight> mapper) {
         return Pair.of(left, mapper.apply(right));
+    }
+
+    public <T> T fold(BiFunction<Left, Right, T> foldFunction) {
+        return foldFunction.apply(left, right);
     }
 }

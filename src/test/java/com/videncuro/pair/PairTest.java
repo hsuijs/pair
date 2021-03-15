@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
+import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -70,6 +71,24 @@ class PairTest {
                 () -> assertThat(pair, left(is("key"))),
                 () -> assertThat(pair, right(is("value")))
         );
+    }
+
+    @Test
+    void optionalPair() {
+        Optional<Pair<String, String>> optionalPair = Pair.optionalPair("1", "2");
+        assertThat(optionalPair, is(Optional.of(Pair.of("1", "2"))));
+    }
+
+    @Test
+    void optionalLeftEmpty() {
+        Optional<Pair<String, String>> optionalPair = Pair.optionalPair(null, "2");
+        assertThat(optionalPair, is(Optional.empty()));
+    }
+
+    @Test
+    void optionalRightEmpty() {
+        Optional<Pair<String, String>> optionalPair = Pair.optionalPair("1", null);
+        assertThat(optionalPair, is(Optional.empty()));
     }
 
     @Test

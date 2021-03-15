@@ -3,6 +3,7 @@ package com.videncuro.pair;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -27,6 +28,10 @@ public final class Pair<Left, Right> implements Serializable,
     public static <Left, Right> Pair<Left, Right> of(Map.Entry<Left, Right> entry) {
         Objects.requireNonNull(entry, "Entry should not be null");
         return new Pair<>(entry.getKey(), entry.getValue());
+    }
+
+    public static <Left, Right> Optional<Pair<Left, Right>> optionalPair(Left left, Right right) {
+        return Optional.ofNullable(left).flatMap(l -> Optional.ofNullable(right).map(r -> Pair.of(l, r)));
     }
 
     public Left left() {

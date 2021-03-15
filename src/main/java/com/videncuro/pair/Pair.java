@@ -84,4 +84,8 @@ public final class Pair<Left, Right> implements Serializable,
     public Pair<Right, Left> swap() {
         return Pair.of(right, left);
     }
+
+    public <NewLeft, NewRight> Pair<NewLeft, NewRight> flatMap(BiFunction<Left, Right, Pair<NewLeft, NewRight>> mapper) {
+        return mapper.apply(left, right);
+    }
 }

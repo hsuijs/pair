@@ -119,6 +119,15 @@ class PairTest {
         );
     }
 
+    @Test
+    void flatMap() {
+        Pair<String, String> pair = Pair.of("left", "right").flatMap((l, r) -> Pair.of(l+r, r+l));
+        Assertions.assertAll(
+                () -> assertThat(pair, left(is("leftright"))),
+                () -> assertThat(pair, right(is("rightleft")))
+        );
+    }
+
     private <Right> Matcher<? super Pair<?, Right>> right(Matcher<Right> matchRight) {
         return new FeatureMatcher<Pair<?, Right>, Right>(matchRight, "right", "right") {
             protected Right featureValueOf(Pair<?, Right> actual) {

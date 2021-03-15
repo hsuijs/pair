@@ -102,13 +102,21 @@ class PairTest {
                 () -> assertThat(pair, left(is("hello"))),
                 () -> assertThat(pair, right(is("all the world")))
         );
-
     }
 
     @Test
     void fold() {
         Pair<String, String> pair = Pair.of("left", "right");
         assertThat(pair.fold((l, r) -> l + " " +r), is("left right"));
+    }
+
+    @Test
+    void swap() {
+        Pair<String, String> pair = Pair.of("world", "hello").swap();
+        Assertions.assertAll(
+                () -> assertThat(pair, left(is("hello"))),
+                () -> assertThat(pair, right(is("world")))
+        );
     }
 
     private <Right> Matcher<? super Pair<?, Right>> right(Matcher<Right> matchRight) {

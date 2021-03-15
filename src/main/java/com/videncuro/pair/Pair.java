@@ -80,4 +80,8 @@ public final class Pair<Left, Right> implements Serializable,
     public <T> T fold(BiFunction<Left, Right, T> foldFunction) {
         return foldFunction.apply(left, right);
     }
+
+    public Pair<Right, Left> swap() {
+        return Pair.of(right, left);
+    }
 }

@@ -32,6 +32,13 @@ class PairTest {
     }
 
     @Test
+    void mapEntryCannotBeNull() {
+        Assertions.assertThrows(NullPointerException.class,
+                () -> Pair.of(null)
+        );
+    }
+
+    @Test
     void createPairFromMapEntry() {
         Pair<String, String> pair = Pair.of(new Map.Entry<String, String>() {
             @Override
@@ -62,6 +69,16 @@ class PairTest {
         Assertions.assertAll(
                 () -> assertThat(pair, left(is("key"))),
                 () -> assertThat(pair, right(is("value")))
+        );
+    }
+
+    @Test
+    void createFromObject() {
+        Pair<String, String> pair = Pair.<String, String, String>pairOf(s -> s.substring(0, 1), s1 -> s1.substring(1))
+                .apply("Hello");
+        Assertions.assertAll(
+                () -> assertThat(pair, left(is("H"))),
+                () -> assertThat(pair, right(is("ello")))
         );
     }
 

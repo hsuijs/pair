@@ -16,11 +16,16 @@ public final class Pair<Left, Right> implements Serializable,
         this.right = Objects.requireNonNull(right, "Right should not be null");
     }
 
+    public static <T, Left, Right> Function<T, Pair<Left, Right>> pairOf(Function<T, Left> leftCreator, Function<T, Right> rightCreator) {
+        return t -> Pair.of(leftCreator.apply(t), rightCreator.apply(t));
+    }
+
     public static <Left, Right> Pair<Left, Right> of(Left left, Right right) {
         return new Pair<>(left, right);
     }
 
     public static <Left, Right> Pair<Left, Right> of(Map.Entry<Left, Right> entry) {
+        Objects.requireNonNull(entry, "Entry should not be null");
         return new Pair<>(entry.getKey(), entry.getValue());
     }
 

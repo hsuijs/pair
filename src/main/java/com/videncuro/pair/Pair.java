@@ -34,6 +34,27 @@ public final class Pair<Left, Right> implements Serializable,
         return Optional.ofNullable(left).flatMap(l -> Optional.ofNullable(right).map(r -> Pair.of(l, r)));
     }
 
+    public static <Left, Right, NewLeft> Function<Pair<Left, Right>, Pair<NewLeft, Right>> mapPairLeft(Function<Left, NewLeft> mapper) {
+        Objects.requireNonNull(mapper, "Mapper should not be null");
+        return pair -> pair.mapLeft(mapper);
+    }
+
+    public static <Left, Right, NewRight> Function<Pair<Left, Right>, Pair<Left, NewRight>> mapPairRight(Function<Right, NewRight> mapper) {
+        Objects.requireNonNull(mapper, "Mapper should not be null");
+        return pair -> pair.mapRight(mapper);
+    }
+
+    public static <Left, Right, NewLeft, NewRight> Function<Pair<Left, Right>, Pair<NewLeft, NewRight>> flatMapPair(BiFunction<Left, Right, Pair<NewLeft, NewRight>> mapper) {
+        Objects.requireNonNull(mapper, "Mapper should not be null");
+        return pair -> pair.flatMap(mapper);
+    }
+
+    public static <Left, Right, NewLeft, NewRight> Function<Pair<Left, Right>, Pair<NewLeft, NewRight>> mapPair(Function<Left, NewLeft> leftMapper, Function<Right, NewRight> rightMapper) {
+        Objects.requireNonNull(leftMapper, "LeftMapper should not be null");
+        Objects.requireNonNull(rightMapper, "RightMapper should not be null");
+        return pair -> pair.map(leftMapper, rightMapper);
+    }
+
     public Left left() {
         return left;
     }
@@ -76,18 +97,23 @@ public final class Pair<Left, Right> implements Serializable,
     }
 
     public <NewLeft> Pair<NewLeft, Right> mapLeft(Function<Left, NewLeft> mapper) {
+        Objects.requireNonNull(mapper, "Mapper should not be null");
         return Pair.of(mapper.apply(left), right);
     }
 
-    public <NewLeft> Pair<NewLeft, Right> map(Function<Left, NewLeft> mapper) {
-        return mapLeft(mapper);
+    public <NewLeft, NewRight> Pair<NewLeft, NewRight> map(Function<Left, NewLeft> leftMapper, Function<Right, NewRight> rightMapper) {
+        Objects.requireNonNull(leftMapper, "LeftMapper should not be null");
+        Objects.requireNonNull(rightMapper, "RightMapper should not be null");
+        return Pair.of(leftMapper.apply(left), rightMapper.apply(right));
     }
 
     public <NewRight> Pair<Left, NewRight> mapRight(Function<Right, NewRight> mapper) {
+        Objects.requireNonNull(mapper, "Mapper should not be null");
         return Pair.of(left, mapper.apply(right));
     }
 
     public <T> T fold(BiFunction<Left, Right, T> foldFunction) {
+        Objects.requireNonNull(foldFunction, "FoldFunction should not be null");
         return foldFunction.apply(left, right);
     }
 
@@ -96,6 +122,7 @@ public final class Pair<Left, Right> implements Serializable,
     }
 
     public <NewLeft, NewRight> Pair<NewLeft, NewRight> flatMap(BiFunction<Left, Right, Pair<NewLeft, NewRight>> mapper) {
+        Objects.requireNonNull(mapper, "Mapper should not be null");
         return mapper.apply(left, right);
     }
 }

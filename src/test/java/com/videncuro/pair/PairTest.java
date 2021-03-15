@@ -111,12 +111,12 @@ class PairTest {
     }
 
     @Test
-    void mapAsmapLeft() {
+    void mapBoth() {
         Pair<String, String> pair = Pair.of("hello", "world")
-                .map(s -> s + " name");
+                .map(s -> s + " name", s -> "in this " + s);
         Assertions.assertAll(
                 () -> assertThat(pair, left(is("hello name"))),
-                () -> assertThat(pair, right(is("world")))
+                () -> assertThat(pair, right(is("in this world")))
         );
     }
 
@@ -143,7 +143,7 @@ class PairTest {
     @Test
     void fold() {
         Pair<String, String> pair = Pair.of("left", "right");
-        assertThat(pair.fold((l, r) -> l + " " +r), is("left right"));
+        assertThat(pair.fold((l, r) -> l + " " + r), is("left right"));
     }
 
     @Test
@@ -157,10 +157,54 @@ class PairTest {
 
     @Test
     void flatMap() {
-        Pair<String, String> pair = Pair.of("left", "right").flatMap((l, r) -> Pair.of(l+r, r+l));
+        Pair<String, String> pair = Pair.of("left", "right").flatMap((l, r) -> Pair.of(l + r, r + l));
         Assertions.assertAll(
                 () -> assertThat(pair, left(is("leftright"))),
                 () -> assertThat(pair, right(is("rightleft")))
+        );
+    }
+
+    @Test
+    void functionalMapLeft() {
+        Pair<String, String> pair = Pair.pairOf((String s) -> s.substring(0, 1), (String s) -> s.substring(1))
+                .andThen(Pair.mapPairLeft(String::toUpperCase))
+                .apply("hello");
+        Assertions.assertAll(
+                () -> assertThat(pair, left(is("H"))),
+                () -> assertThat(pair, right(is("ello")))
+        );
+    }
+
+    @Test
+    void functionlMapRight() {
+        Pair<String, String> pair = Pair.pairOf((String s) -> s.substring(0, 1), (String s) -> s.substring(1))
+                .andThen(Pair.mapPairRight(String::toLowerCase))
+                .apply("HELLO");
+        Assertions.assertAll(
+                () -> assertThat(pair, left(is("H"))),
+                () -> assertThat(pair, right(is("ello")))
+        );
+    }
+
+    @Test
+    void functionalMap() {
+        Pair<String, String> pair = Pair.pairOf((String s) -> s.substring(0, 1), (String s) -> s.substring(1))
+                .andThen(Pair.mapPair((String s) -> "_" + s + "_", (String s) -> s.toLowerCase()))
+                .apply("HELLO");
+        Assertions.assertAll(
+                () -> assertThat(pair, left(is("_H_"))),
+                () -> assertThat(pair, right(is("ello")))
+        );
+    }
+
+    @Test
+    void functionalFlatMap() {
+        Pair<String, String> pair = Pair.pairOf((String s) -> s.substring(0, 1), (String s) -> s.substring(1))
+                .andThen(Pair.flatMapPair((l, r) -> Pair.of(r, l)))
+                .apply("HWorld");
+        Assertions.assertAll(
+                () -> assertThat(pair, left(is("World"))),
+                () -> assertThat(pair, right(is("H")))
         );
     }
 

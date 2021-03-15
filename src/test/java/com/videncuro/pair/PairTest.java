@@ -5,10 +5,22 @@ import org.hamcrest.Matcher;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.Map;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 class PairTest {
+
+    @Test
+    void leftNonNull() {
+        Assertions.assertThrows(NullPointerException.class, () -> Pair.of(null, "right"));
+    }
+
+    @Test
+    void rightNonNull() {
+        Assertions.assertThrows(NullPointerException.class, () -> Pair.of("left", null));
+    }
 
     @Test
     void createPairLeftAndRight() {
@@ -20,13 +32,46 @@ class PairTest {
     }
 
     @Test
-    void leftNonNull() {
-        Assertions.assertThrows(NullPointerException.class, () -> Pair.of(null, "right"));
+    void createPairFromMapEntry() {
+        Pair<String, String> pair = Pair.of(new Map.Entry<String, String>() {
+            @Override
+            public String getKey() {
+                return "key";
+            }
+
+            @Override
+            public String getValue() {
+                return "value";
+            }
+
+            @Override
+            public String setValue(String value) {
+                return null;
+            }
+
+            @Override
+            public boolean equals(Object o) {
+                return false;
+            }
+
+            @Override
+            public int hashCode() {
+                return 0;
+            }
+        });
+        Assertions.assertAll(
+                () -> assertThat(pair, left(is("key"))),
+                () -> assertThat(pair, right(is("value")))
+        );
     }
 
     @Test
-    void rightNonNull() {
-        Assertions.assertThrows(NullPointerException.class, () -> Pair.of("left", null));
+    void pairReturnsKeyAndValue() {
+        Pair<String, String> pair = Pair.of("key", "value");
+        Assertions.assertAll(
+                () -> assertThat(pair, left(is("key"))),
+                () -> assertThat(pair, right(is("value")))
+        );
     }
 
     private <Right> Matcher<? super Pair<?, Right>> right(Matcher<Right> matchRight) {

@@ -1,8 +1,11 @@
 package com.videncuro.pair;
 
+import java.io.Serializable;
+import java.util.Map;
 import java.util.Objects;
 
-public class Pair<Left, Right> {
+public final class Pair<Left, Right> implements Serializable,
+        Map.Entry<Left, Right> {
     private final Left left;
     private final Right right;
 
@@ -15,12 +18,31 @@ public class Pair<Left, Right> {
         return new Pair<>(left, right);
     }
 
+    public static <Left, Right> Pair<Left, Right> of(Map.Entry<Left, Right> entry) {
+        return new Pair<>(entry.getKey(), entry.getValue());
+    }
+
     public Left left() {
         return left;
     }
 
     public Right right() {
         return right;
+    }
+
+    @Override
+    public Left getKey() {
+        return left;
+    }
+
+    @Override
+    public Right getValue() {
+        return right;
+    }
+
+    @Override
+    public Right setValue(Right value) {
+        throw new RuntimeException("Pair is immutable");
     }
 
     @Override
@@ -34,5 +56,10 @@ public class Pair<Left, Right> {
     @Override
     public int hashCode() {
         return Objects.hash(left, right);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Pair{left=%s, right=%s}", left, right);
     }
 }

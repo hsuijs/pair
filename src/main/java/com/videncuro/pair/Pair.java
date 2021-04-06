@@ -132,4 +132,8 @@ public final class Pair<Left, Right> implements Serializable,
     public boolean and(Predicate<Left> leftPredicate, Predicate<Right> rightPredicate) {
         return leftPredicate.test(left) && rightPredicate.test(right);
     }
+
+    public boolean or(Predicate<Left> leftPredicate, Predicate<Right> rightPredicate) {
+        return leftPredicate.test(left) || rightPredicate.test(right);
+    }
 }

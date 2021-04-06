@@ -227,6 +227,36 @@ class PairTest {
         assertThat("Pair should be true for both conditions", !pair.and(l -> Objects.equals(l, "hello"), r -> r.length() > 0));
     }
 
+    @Test
+    void fail_condition_for_both() {
+        Pair<String, String> pair = Pair.of("hello", "");
+        assertThat("Pair should be true for both conditions", !pair.and(l -> Objects.equals(l, "hello"), r -> r.length() > 0));
+    }
+
+    @Test
+    void check_condition_for_either_both_checkout() {
+        Pair<String, String> pair = Pair.of("hello", "");
+        assertThat("Pair should be true for either conditions", pair.or(l -> Objects.equals(l, "hello"), r -> r.length() == 0));
+    }
+
+    @Test
+    void check_condition_for_either_left_succeeds() {
+        Pair<String, String> pair = Pair.of("hello", "");
+        assertThat("Pair should be true for either conditions", pair.or(l -> Objects.equals(l, "hello"), r -> r.length() == 1));
+    }
+
+    @Test
+    void check_condition_for_either_right_succeeds() {
+        Pair<String, String> pair = Pair.of("hello", "");
+        assertThat("Pair should be true for either conditions", pair.or(l -> Objects.equals(l, "bye"), r -> r.length() == 0));
+    }
+
+    @Test
+    void check_condition_for_either_both_fail() {
+        Pair<String, String> pair = Pair.of("hello", "");
+        assertThat("Pair should be true for either conditions", !pair.or(l -> Objects.equals(l, "bye"), r -> r.length() == 1));
+    }
+
     private <Right> Matcher<? super Pair<?, Right>> right(Matcher<Right> matchRight) {
         return new FeatureMatcher<Pair<?, Right>, Right>(matchRight, "right", "right") {
             protected Right featureValueOf(Pair<?, Right> actual) {

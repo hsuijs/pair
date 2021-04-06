@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -189,7 +190,7 @@ class PairTest {
     @Test
     void functionalMap() {
         Pair<String, String> pair = Pair.pairOf((String s) -> s.substring(0, 1), (String s) -> s.substring(1))
-                .andThen(Pair.mapPair((String s) -> "_" + s + "_", (String s) -> s.toLowerCase()))
+                .andThen(Pair.mapPair((String s) -> "_" + s + "_", String::toLowerCase))
                 .apply("HELLO");
         Assertions.assertAll(
                 () -> assertThat(pair, left(is("_H_"))),
@@ -208,6 +209,24 @@ class PairTest {
         );
     }
 
+    @Test
+    void check_condition_for_both() {
+        Pair<String, String> pair = Pair.of("hello", "");
+        assertThat("Pair should be true for both conditions", pair.and(l -> Objects.equals(l, "hello"), r -> r.length() == 0));
+    }
+
+    @Test
+    void fail_condition_for_left() {
+        Pair<String, String> pair = Pair.of("hello", "");
+        assertThat("Pair should be true for both conditions", !pair.and(l -> Objects.equals(l, ""), r -> r.length() == 0));
+    }
+
+    @Test
+    void fail_condition_for_right() {
+        Pair<String, String> pair = Pair.of("hello", "");
+        assertThat("Pair should be true for both conditions", !pair.and(l -> Objects.equals(l, "hello"), r -> r.length() > 0));
+    }
+
     private <Right> Matcher<? super Pair<?, Right>> right(Matcher<Right> matchRight) {
         return new FeatureMatcher<Pair<?, Right>, Right>(matchRight, "right", "right") {
             protected Right featureValueOf(Pair<?, Right> actual) {
@@ -218,7 +237,6 @@ class PairTest {
 
     private <Left> Matcher<? super Pair<Left, ?>> left(Matcher<Left> matchLeft) {
         return new FeatureMatcher<Pair<Left, ?>, Left>(matchLeft, "left", "left") {
-
             protected Left featureValueOf(Pair<Left, ?> actual) {
                 return actual.left();
             }

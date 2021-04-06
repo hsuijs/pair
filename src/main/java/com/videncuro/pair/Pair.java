@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public final class Pair<Left, Right> implements Serializable,
         Map.Entry<Left, Right> {
@@ -18,6 +19,8 @@ public final class Pair<Left, Right> implements Serializable,
     }
 
     public static <T, Left, Right> Function<T, Pair<Left, Right>> pairOf(Function<T, Left> leftCreator, Function<T, Right> rightCreator) {
+        Objects.requireNonNull(leftCreator, "LeftCreator should not be null");
+        Objects.requireNonNull(rightCreator, "RightCreator should not be null");
         return t -> Pair.of(leftCreator.apply(t), rightCreator.apply(t));
     }
 
@@ -124,5 +127,9 @@ public final class Pair<Left, Right> implements Serializable,
     public <NewLeft, NewRight> Pair<NewLeft, NewRight> flatMap(BiFunction<Left, Right, Pair<NewLeft, NewRight>> mapper) {
         Objects.requireNonNull(mapper, "Mapper should not be null");
         return mapper.apply(left, right);
+    }
+
+    public boolean and(Predicate<Left> leftPredicate, Predicate<Right> rightPredicate) {
+        return leftPredicate.test(left) && rightPredicate.test(right);
     }
 }
